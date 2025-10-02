@@ -21,6 +21,7 @@
                     <th>Nom</th>
                     <th>Catégorie</th>
                     <th>Prix</th>
+                    <th>Pays</th>
                     <th>Statut</th>
                     <th>Actions</th>
                 </tr>
@@ -31,6 +32,7 @@
                         <td><?= htmlspecialchars($product['name']) ?></td>
                         <td><?= htmlspecialchars($product['category_name'] ?? 'N/A') ?></td>
                         <td><?= number_format($product['price'], 2) ?>€</td>
+                        <td><?= htmlspecialchars($product['country'] ?? 'FR') ?></td>
                         <td><?= htmlspecialchars(ucfirst($product['status'])) ?></td>
                         <td>
                             <a href="<?= BASE_URL ?>admin/products/edit/<?= $product['id'] ?>" class="btn btn-sm btn-warning">

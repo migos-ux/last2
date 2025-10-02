@@ -63,7 +63,7 @@
                                 <select class="form-select" id="category_id" name="category_id" required>
                                     <option value="">Sélectionnez une catégorie</option>
                                     <?php foreach ($categories as $category): ?>
-                                        <option value="<?= $category['id'] ?>" 
+                                        <option value="<?= $category['id'] ?>"
                                                 <?= ($_POST['category_id'] ?? '') == $category['id'] ? 'selected' : '' ?>>
                                             <?= htmlspecialchars($category['name']) ?>
                                         </option>
@@ -80,6 +80,19 @@
                                 </select>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="country" class="form-label">Pays de publication *</label>
+                        <select class="form-select" id="country" name="country" required>
+                            <option value="FR" <?= ($_POST['country'] ?? 'FR') == 'FR' ? 'selected' : '' ?>>France</option>
+                            <option value="BE" <?= ($_POST['country'] ?? '') == 'BE' ? 'selected' : '' ?>>Belgique</option>
+                            <option value="CH" <?= ($_POST['country'] ?? '') == 'CH' ? 'selected' : '' ?>>Suisse</option>
+                            <option value="CA" <?= ($_POST['country'] ?? '') == 'CA' ? 'selected' : '' ?>>Canada</option>
+                            <option value="LU" <?= ($_POST['country'] ?? '') == 'LU' ? 'selected' : '' ?>>Luxembourg</option>
+                            <option value="MC" <?= ($_POST['country'] ?? '') == 'MC' ? 'selected' : '' ?>>Monaco</option>
+                        </select>
+                        <div class="form-text">Choisissez le pays où ce produit sera visible</div>
                     </div>
 
                     <div class="mb-3">

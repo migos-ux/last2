@@ -2,18 +2,22 @@
 class Database {
     private static $instance = null;
     private $connection;
-    
-    private $host = 'localhost';
-    private $username = 'root';
-    private $password = '';
-    private $database = 'ecommerce_mvc';
-    
+
     private function __construct() {
+        // Charger les variables d'environnement depuis .env
+        $this->loadEnv();
+
+        $host = $_ENV['SUPABASE_DB_HOST'] ?? 'aws-0-eu-central-1.pooler.supabase.com';
+        $port = $_ENV['SUPABASE_DB_PORT'] ?? '6543';
+        $database = $_ENV['SUPABASE_DB_NAME'] ?? 'postgres';
+        $username = $_ENV['SUPABASE_DB_USER'] ?? 'postgres.myoumigeiktoeiexdsqt';
+        $password = $_ENV['SUPABASE_DB_PASSWORD'] ?? 'Abdelaali1234';
+
         try {
             $this->connection = new PDO(
-                "mysql:host={$this->host};dbname={$this->database};charset=utf8",
-                $this->username,
-                $this->password,
+                "pgsql:host={$host};port={$port};dbname={$database}",
+                $username,
+                $password,
                 [
                     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -22,6 +26,24 @@ class Database {
             );
         } catch (PDOException $e) {
             throw new Exception("Erreur de connexion à la base de données: " . $e->getMessage());
+        }
+    }
+
+    private function loadEnv() {
+        $envFile = __DIR__ . '/../.env';
+        if (file_exists($envFile)) {
+            $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+            foreach ($lines as $line) {
+                if (strpos(trim($line), '#') === 0) continue;
+
+                list($name, $value) = explode('=', $line, 2);
+                $name = trim($name);
+                $value = trim($value);
+
+                if (!array_key_exists($name, $_ENV)) {
+                    $_ENV[$name] = $value;
+                }
+            }
         }
     }
     

@@ -13,40 +13,56 @@ class Product extends Model {
         return $stmt->fetchAll();
     }
     
-    public function search($query, $categoryId = null, $minPrice = null, $maxPrice = null) {
+    public function search($query, $categoryId = null, $minPrice = null, $maxPrice = null, $country = null) {
         $sql = "SELECT * FROM {$this->table} WHERE status = 'active'";
         $params = [];
-        
+
         if ($query) {
-            $sql .= " AND (name LIKE ? OR description LIKE ?)";
+            $sql .= " AND (name ILIKE ? OR description ILIKE ?)";
             $params[] = "%{$query}%";
             $params[] = "%{$query}%";
         }
-        
+
         if ($categoryId) {
             $sql .= " AND category_id = ?";
             $params[] = $categoryId;
         }
-        
+
         if ($minPrice) {
             $sql .= " AND price >= ?";
             $params[] = $minPrice;
         }
-        
+
         if ($maxPrice) {
             $sql .= " AND price <= ?";
             $params[] = $maxPrice;
         }
-        
+
+        if ($country) {
+            $sql .= " AND country = ?";
+            $params[] = $country;
+        }
+
         $sql .= " ORDER BY created_at DESC";
-        
+
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
         return $stmt->fetchAll();
     }
+
+    public function findByCountry($country, $limit = null) {
+        $sql = "SELECT * FROM {$this->table} WHERE country = ? AND status = 'active' ORDER BY created_at DESC";
+        if ($limit) {
+            $sql .= " LIMIT {$limit}";
+        }
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$country]);
+        return $stmt->fetchAll();
+    }
     
     public function getFeatured($limit = 8) {
-        $stmt = $this->db->prepare("SELECT * FROM {$this->table} WHERE featured = 1 AND status = 'active' ORDER BY created_at DESC LIMIT ?");
+        $stmt = $this->db->prepare("SELECT * FROM {$this->table} WHERE featured = true AND status = 'active' ORDER BY created_at DESC LIMIT ?");
         $stmt->execute([$limit]);
         return $stmt->fetchAll();
     }

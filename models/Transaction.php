@@ -128,18 +128,18 @@ class Transaction extends Model {
     }
     
     public function getDailyStats($days = 30) {
-        $sql = "SELECT 
+        $sql = "SELECT
                     DATE(created_at) as date,
                     COUNT(*) as transactions,
                     SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) as completed,
                     SUM(CASE WHEN status = 'completed' THEN total_amount ELSE 0 END) as revenue
-                FROM {$this->table} 
-                WHERE created_at >= DATE_SUB(NOW(), INTERVAL ? DAY)
+                FROM {$this->table}
+                WHERE created_at >= NOW() - INTERVAL '{$days} days'
                 GROUP BY DATE(created_at)
                 ORDER BY date DESC";
-        
+
         $stmt = $this->db->prepare($sql);
-        $stmt->execute([$days]);
+        $stmt->execute();
         return $stmt->fetchAll();
     }
 }

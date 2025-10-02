@@ -28,16 +28,17 @@ class Model {
         $fields = array_keys($data);
         $placeholders = ':' . implode(', :', $fields);
         $fieldsList = implode(', ', $fields);
-        
-        $sql = "INSERT INTO {$this->table} ({$fieldsList}) VALUES ({$placeholders})";
+
+        $sql = "INSERT INTO {$this->table} ({$fieldsList}) VALUES ({$placeholders}) RETURNING id";
         $stmt = $this->db->prepare($sql);
-        
+
         foreach ($data as $key => $value) {
             $stmt->bindValue(":{$key}", $value);
         }
-        
+
         $stmt->execute();
-        return $this->db->lastInsertId();
+        $result = $stmt->fetch();
+        return $result ? $result['id'] : null;
     }
     
     public function update($id, $data) {

@@ -40,10 +40,10 @@ class AdminController extends Controller {
     public function createProduct() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->validateCSRF();
-            
+
             $data = $this->sanitize($_POST);
             $errors = $this->validateProduct($data);
-            
+
             // Gestion de l'upload d'image
             if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
                 $uploadResult = $this->uploadImage($_FILES['image']);
@@ -53,12 +53,14 @@ class AdminController extends Controller {
                     $errors[] = $uploadResult['error'];
                 }
             }
-            
+
             if (empty($errors)) {
                 $productModel = new Product();
                 $data['created_at'] = date('Y-m-d H:i:s');
-                $data['status'] = 'active';
-                
+                $data['status'] = $data['status'] ?? 'active';
+                $data['country'] = $data['country'] ?? 'FR';
+                $data['featured'] = isset($data['featured']) ? 1 : 0;
+
                 $productModel->create($data);
                 $_SESSION['flash_message'] = 'Produit créé avec succès!';
                 $this->redirect('admin/products');
@@ -106,6 +108,8 @@ class AdminController extends Controller {
             
             if (empty($errors)) {
                 $data['updated_at'] = date('Y-m-d H:i:s');
+                $data['country'] = $data['country'] ?? 'FR';
+                $data['featured'] = isset($data['featured']) ? 1 : 0;
                 $productModel->update($id, $data);
                 $_SESSION['flash_message'] = 'Produit modifié avec succès!';
                 $this->redirect('admin/products');

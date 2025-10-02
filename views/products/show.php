@@ -44,6 +44,13 @@
                         </a>
                     </p>
                 <?php endif; ?>
+
+                <?php if (isset($product['country'])): ?>
+                    <p class="text-muted mb-3">
+                        <i class="fas fa-globe me-2"></i>
+                        <span>Disponible en: <?= htmlspecialchars($product['country']) ?></span>
+                    </p>
+                <?php endif; ?>
                 
                 <div class="price-section mb-4">
                     <span class="h2 text-primary"><?= number_format($product['price'], 2) ?>€</span>
